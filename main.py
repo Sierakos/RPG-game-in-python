@@ -281,9 +281,11 @@ class GameClass:
             print("-"*50)
             
             # items that will appear in shop (if they are in items.py)
-            items_in_shops = ["Patyk", "Mala mikstura HP", "Drewniana proca"]
+            items_in_shops = ["Patyk", "Mala mikstura HP", "Drewniana proca", "Drewniany miecz"]
             items_in_shops = sorted(items_in_shops)
 
+            type_of_items = [WEAPONS, USABLE]
+            
             i=0
             sorted_items = {}
 
@@ -292,56 +294,39 @@ class GameClass:
                 if item in WEAPONS:
                     i += 1
                     sorted_items[i] = item
-                    print(f"{str(i)}. {item}")
+                    print(f"{str(i)}. {item} | cena: {WEAPONS[item]['Cena']}")
 
             print("\nMikstury: ")
             for item in items_in_shops:
                 if item in USABLE:
                     i += 1
                     sorted_items[i] = item
-                    print(f"{str(i)}. {item}")
+                    print(f"{str(i)}. {item} | cena: {USABLE[item]['Cena']}")
                 
-
-
             print(f"{str(i+1)}. Wyjdź")
             print("-"*50)
 
             choose = input()
-            try: 
-                if int(choose) > 0 and int(choose) <= len(sorted_items) and WEAPONS[sorted_items[int(choose)]]['Rodzaj'] == 'Bron':
-                    if self.player.money >= WEAPONS[sorted_items[int(choose)]]['Cena']:
-                        print(f"Kupiłeś {sorted_items[int(choose)]}")
-                        if sorted_items[int(choose)] not in self.player.eq:
-                            self.player.eq[sorted_items[int(choose)]] = WEAPONS[sorted_items[int(choose)]]
-                            self.player.eq[sorted_items[int(choose)]]['Ilosc'] = 1
-                            self.player.money -= WEAPONS[sorted_items[int(choose)]]['Cena']
-                        else:
-                            self.player.eq[sorted_items[int(choose)]]['Ilosc'] += 1
-                            self.player.money -= WEAPONS[sorted_items[int(choose)]]['Cena']
-                    else:
-                        print("Nie stać cię na to")
-                if choose == str(i+1):
-                    break
-            except KeyError as e:
-                pass
 
-            try:
-                if int(choose) > 0 and int(choose) <= len(sorted_items) and USABLE[sorted_items[int(choose)]]['Rodzaj'] == 'Mikstura HP':
-                    if self.player.money >= USABLE[sorted_items[int(choose)]]['Cena']:
-                        print(f"Kupiłeś {sorted_items[int(choose)]}")
-                        if sorted_items[int(choose)] not in self.player.eq:
-                            self.player.eq[sorted_items[int(choose)]] = USABLE[sorted_items[int(choose)]]
-                            self.player.eq[sorted_items[int(choose)]]['Ilosc'] = 1
-                            self.player.money -= USABLE[sorted_items[int(choose)]]['Cena']
+            type_of_items = [WEAPONS, USABLE]
+            if int(choose) > 0 and int(choose) <= len(sorted_items):
+                item = sorted_items[int(choose)]
+                for types in type_of_items:
+                    if item in types:
+                        if self.player.money >= types[sorted_items[int(choose)]]['Cena']:
+                            print(f"Kupiłeś {sorted_items[int(choose)]}")
+                            if sorted_items[int(choose)] not in self.player.eq:
+                                self.player.eq[sorted_items[int(choose)]] = types[sorted_items[int(choose)]]
+                                self.player.eq[sorted_items[int(choose)]]['Ilosc'] = 1
+                                self.player.money -= types[sorted_items[int(choose)]]['Cena']
+                            else:
+                                self.player.eq[sorted_items[int(choose)]]['Ilosc'] += 1
+                                self.player.money -= types[sorted_items[int(choose)]]['Cena']
                         else:
-                            self.player.eq[sorted_items[int(choose)]]['Ilosc'] += 1
-                            self.player.money -= USABLE[sorted_items[int(choose)]]['Cena']
-                    else:
-                        print("Nie stać cię na to")
-                if choose == str(i+1):
-                    break
-            except KeyError as e:
-                pass
+                            print("Nie stać cie na to")
+
+            if choose == str(i+1):
+                break
 
     def shop_sell_page(self):
         os.system('cls')
